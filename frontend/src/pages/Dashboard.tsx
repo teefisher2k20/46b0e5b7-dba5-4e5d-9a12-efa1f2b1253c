@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Sparkles, Video, Image, Hash, TrendingUp, Calendar, Zap, Brain } from 'lucide-react';
+import { Sparkles, Video, Image, Hash, TrendingUp, Calendar, Zap, Brain, Upload, Search, Wrench, Cpu, ChevronDown } from 'lucide-react';
 import { generateTask } from '../services/api';
 
 const categories = [
@@ -18,6 +18,8 @@ export default function Dashboard() {
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<any>(null);
+  const [extendedThinking, setExtendedThinking] = useState(false);
+  const [selectedModel, setSelectedModel] = useState('GPT-4');
 
   const handleGenerate = async () => {
     if (!prompt.trim()) return;
@@ -31,9 +33,10 @@ export default function Dashboard() {
         category: selectedCategory || undefined,
       });
       setResult(response);
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error generating task:', error);
-      setResult({ status: 'error', plan: {}, results: { error: 'Failed to generate task' } });
+      const errorMessage = error.response?.data?.detail || error.message || 'Failed to generate task';
+      setResult({ status: 'error', plan: {}, results: { error: errorMessage } });
     } finally {
       setLoading(false);
     }
@@ -83,7 +86,7 @@ export default function Dashboard() {
                   }}
                 >
                   <Icon size={32} color={category.color} />
-                  <span className="font-semibold">{category.name}</span>
+                  <span className="font-semibold" style={{ color: 'var(--text-primary)' }}>{category.name}</span>
                 </button>
               );
             })}
@@ -104,124 +107,83 @@ export default function Dashboard() {
               minHeight: '120px',
             }}
           />
-          <button
-            onClick={handleGenerate}
-            disabled={loading || !prompt.trim()}
-            className="btn btn-primary mt-3"
-            style={{
-              width: '100%',
-              opacity: loading || !prompt.trim() ? 0.5 : 1,
-              cursor: loading || !prompt.trim() ? 'not-allowed' : 'pointer',
-            }}
-          >
-            {loading ? (
-              <span className="flex items-center justify-center gap-2">
-                <div className="spinner" style={{ width: '20px', height: '20px', borderWidth: '2px' }} />
-                Generating...
-              </span>
-            ) : (
-              <span className="flex items-center justify-center gap-2">
-                <Sparkles size={20} />
-                Generate with AI
-              </span>
-            )}
-          </button>
-        </div>
-
-        {/* Results Section */}
-        {result && (
-          <div className="glass-card fade-in">
-            <h2 className="text-2xl font-semibold mb-3">Results</h2>
-            
-            {/* Plan */}
-            {result.plan && result.plan.analysis && (
-              <div className="mb-4 p-4" style={{
-                background: 'var(--bg-card)',
-                borderRadius: 'var(--radius-md)',
-                borderLeft: '4px solid var(--primary)',
-              }}>
-                <h3 className="text-lg font-semibold mb-2 flex items-center gap-2">
-                  <Brain size={20} color="var(--primary)" />
-                  AI Analysis
-                </h3>
-                <p className="text-secondary">{result.plan.analysis}</p>
-              </div>
-            )}
-
-            {/* Tool Results */}
-            {result.results && Object.keys(result.results).length > 0 && (
-              <div>
-                <h3 className="text-lg font-semibold mb-3">Tool Outputs</h3>
-                <div className="grid grid-cols-1 gap-3">
-                  {Object.entries(result.results).map(([tool, data]: [string, any]) => (
-                    <div
-                      key={tool}
-                      className="p-4"
-                      style={{
-                        background: 'var(--bg-card)',
-                        borderRadius: 'var(--radius-md)',
-                        border: '1px solid var(--border)',
-                      }}
-                    >
-                      <h4 className="font-semibold mb-2 capitalize">{tool}</h4>
-                      <pre className="text-sm text-secondary" style={{
-                        whiteSpace: 'pre-wrap',
-                        wordBreak: 'break-word',
-                      }}>
-                        {JSON.stringify(data, null, 2)}
-                      </pre>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {/* Error State */}
-            {result.status === 'error' && (
-              <div className="p-4" style={{
-                background: 'hsla(0, 84%, 60%, 0.1)',
-                borderRadius: 'var(--radius-md)',
-                border: '1px solid var(--error)',
-              }}>
-                <p className="text-error">An error occurred while processing your request.</p>
-              </div>
-            )}
-          </div>
-        )}
-      </div>
-
-      <style>{`
-        .min-h-screen {
-          min-height: 100vh;
-        }
-
-        .grid {
-          display: grid;
-        }
-
-        .grid-cols-1 {
-          grid-template-columns: repeat(1, minmax(0, 1fr));
-        }
-
-        .grid-cols-4 {
-          grid-template-columns: repeat(4, minmax(0, 1fr));
-        }
-
-        @media (max-width: 768px) {
-          .grid-cols-4 {
-            grid-template-columns: repeat(2, minmax(0, 1fr));
-          }
-        }
-
-        .category-card:hover {
-          transform: translateY(-4px);
-          box-shadow: var(--shadow-lg);
-        }
-
-        textarea.input {
-          font-family: inherit;
-        }
-      `}</style>
-    </div>
-  );
-}
+          
+          {/* Toolbar */}
+          <div className="flex items-center justify-between mt-4 px-1">
+            <div className="flex items-center gap-3">
+              <button 
+                title="Upload Image/Video"
+                style={{
+                  background: 'var(--bg-card)',
+                  border: '1px solid var(--border)',
+                  borderRadius: 'var(--radius-md)',
+                  padding: '10px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                  cursor: 'pointer',
+                  transition: 'all var(--transition-base)',
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.transform = 'translateY(-2px)';
+                  e.currentTarget.style.borderColor = 'hsl(260, 85%, 55%)';
+                  e.currentTarget.style.boxShadow = 'var(--shadow-md)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.transform = 'translateY(0)';
+                  e.currentTarget.style.borderColor = 'var(--border)';
+                  e.currentTarget.style.boxShadow = 'none';
+                }}
+              >
+                <Upload size={18} color="hsl(260, 85%, 55%)" />
+                <span className="text-sm font-medium" style={{ color: 'var(--text-primary)' }}>Upload</span>
+              </button>
+              
+              <button 
+                title="Search Web"
+                style={{
+                  background: 'var(--bg-card)',
+                  border: '1px solid var(--border)',
+                  borderRadius: 'var(--radius-md)',
+                  padding: '10px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                  cursor: 'pointer',
+                  transition: 'all var(--transition-base)',
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.transform = 'translateY(-2px)';
+                  e.currentTarget.style.borderColor = 'hsl(200, 85%, 55%)';
+                  e.currentTarget.style.boxShadow = 'var(--shadow-md)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.transform = 'translateY(0)';
+                  e.currentTarget.style.borderColor = 'var(--border)';
+                  e.currentTarget.style.boxShadow = 'none';
+                }}
+              >
+                <Search size={18} color="hsl(200, 85%, 55%)" />
+                <span className="text-sm font-medium" style={{ color: 'var(--text-primary)' }}>Search</span>
+              </button>
+              
+              <button 
+                title="Tools"
+                style={{
+                  background: 'var(--bg-card)',
+                  border: '1px solid var(--border)',
+                  borderRadius: 'var(--radius-md)',
+                  padding: '10px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                  cursor: 'pointer',
+                  transition: 'all var(--transition-base)',
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.transform = 'translateY(-2px)';
+                  e.currentTarget.style.borderColor = 'hsl(38, 92%, 50%)';
+                  e.currentTarget.style.boxShadow = 'var(--shadow-md)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.transform = 'translateY(0
