@@ -1,0 +1,18 @@
+# Tasks
+
+- [ ] Project Setup <!-- id: 0 -->
+    - [ ] Initialize project directory and git <!-- id: 1 -->
+    - [ ] Set up Python virtual environment and dependencies <!-- id: 2 -->
+    - [ ] Set up Frontend (Vite + React) <!-- id: 3 -->
+- [ ] Backend Implementation <!-- id: 4 -->
+    - [ ] Create API wrappers for AI tools (Synthesys, HeyGen, etc.) <!-- id: 5 -->
+    - [ ] Implement Generator Logic (LLM integration) <!-- id: 6 -->
+    - [ ] Create FastAPI application and endpoints <!-- id: 7 -->
+- [ ] Frontend Implementation <!-- id: 8 -->
+    - [ ] Create main layout and navigation <!-- id: 9 -->
+    - [ ] Implement Task/Category Selection UI <!-- id: 10 -->
+    - [ ] Implement Result Display and Interaction <!-- id: 11 -->
+    - [ ] Integrate Avatar visualization <!-- id: 12 -->
+- [ ] Verification <!-- id: 13 -->
+    - [ ] Test API endpoints <!-- id: 14 -->
+    - [ ] Verify Frontend-Backend integration <!-- id: 15 -->

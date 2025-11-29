@@ -1,0 +1,53 @@
+# AI Automation Project Implementation Plan
+
+## Goal Description
+Build an AI-powered task automation generator that integrates various AI tools (Ideas, Design, Graphs, Stock, Hashtags, Analytics, Schedule, AI) and provides a web interface for users to generate and manage these tasks. The system will also support realistic AI avatars.
+
+## User Review Required
+> [!IMPORTANT]
+> - **API Keys**: The application requires valid API keys for multiple services (Synthesys, HeyGen, DeepBrain, Jasper, Zapier, MonkeyLearn, Google Cloud, OpenAI). These need to be provided by the user.
+> - **Tech Stack**: Python (FastAPI) for backend, React (Vite) for frontend.
+
+## Proposed Changes
+
+### Project Structure
+#### [NEW] [backend/](file:///c:/Users/Terrance/.gemini/antigravity/scratch/ai_automation_project/backend)
+- `main.py`: Entry point for FastAPI.
+- `requirements.txt`: Python dependencies.
+- `services/`: Directory for AI tool wrappers.
+    - `synthesys.py`
+    - `heygen.py`
+    - `deepbrain.py`
+    - `jasper.py`
+    - `zapier.py`
+    - `monkeylearn.py`
+    - `google_vision.py`
+    - `dialogflow.py`
+    - `textcortex.py`
+    - `openai_service.py`
+- `models/`: Pydantic models for API requests/responses.
+
+#### [NEW] [frontend/](file:///c:/Users/Terrance/.gemini/antigravity/scratch/ai_automation_project/frontend)
+- Standard Vite + React + TypeScript setup.
+- `src/components/`: Reusable UI components.
+- `src/pages/`: Main application pages (Dashboard, Generator, Settings).
+
+### Backend Implementation
+- **API Wrappers**: Implement functions from `ai_features_implementation.md` as modular services.
+- **Generator Endpoint**: Create an endpoint that uses OpenAI (or similar) to process the "Generator Prompt" and orchestrate the other tools.
+
+### Frontend Implementation
+- **Dashboard**: View to select categories and input tasks.
+- **Results View**: Display generated content (text, video, images).
+- **Avatar Interface**: UI to interact with AI avatars.
+
+## Verification Plan
+
+### Automated Tests
+- Unit tests for each service wrapper (mocking external API calls).
+- Integration tests for the Generator endpoint.
+
+### Manual Verification
+- Run the application locally.
+- Input a sample task (e.g., "Create a marketing video").
+- Verify that the system calls the appropriate services and returns a coherent result.
